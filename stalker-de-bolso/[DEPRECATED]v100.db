@@ -1,0 +1,6 @@
+CREATE TABLE gasto (
+    id         INTEGER     PRIMARY KEY,
+    valor      REAL        NOT NULL,
+    data_gasto DATE        NOT NULL,
+    nome       VARCHAR(30) NOT NULL
+);
