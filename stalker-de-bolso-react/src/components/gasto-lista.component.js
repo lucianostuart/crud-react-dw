@@ -1,42 +1,42 @@
 import React, { Component } from "react";
-import TutorialDataService from "../services/tutorial.service";
+import GastoDataService from "../services/gasto.service";
 import { Link } from "react-router-dom";
 
-export default class TutorialsList extends Component {
+export default class GastosList extends Component {
   constructor(props) {
     super(props);
-    this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
-    this.retrieveTutorials = this.retrieveTutorials.bind(this);
+    this.onChangeBuscarNome = this.onChangeBuscarNome.bind(this);
+    this.retrieveGastos = this.retrieveGastos.bind(this);
     this.refreshList = this.refreshList.bind(this);
-    this.setActiveTutorial = this.setActiveTutorial.bind(this);
-    this.removeAllTutorials = this.removeAllTutorials.bind(this);
-    this.searchTitle = this.searchTitle.bind(this);
+    this.setActiveGasto = this.setActiveGasto.bind(this);
+    this.removeAllGastos = this.removeAllGastos.bind(this);
+    this.buscarNome = this.buscarNome.bind(this);
 
     this.state = {
-      tutorials: [],
-      currentTutorial: null,
+      gastos: [],
+      currentGasto: null,
       currentIndex: -1,
-      searchTitle: ""
+      buscarNome: ""
     };
   }
 
   componentDidMount() {
-    this.retrieveTutorials();
+    this.retrieveGastos();
   }
 
-  onChangeSearchTitle(e) {
-    const searchTitle = e.target.value;
+  onChangeBuscarNome(e) {
+    const buscarNome = e.target.value;
 
     this.setState({
-      searchTitle: searchTitle
+      buscarNome: buscarNome
     });
   }
 
-  retrieveTutorials() {
-    TutorialDataService.getAll()
+  retrieveGastos() {
+    GastoDataService.getAll()
       .then(response => {
         this.setState({
-          tutorials: response.data
+          gastos: response.data
         });
         console.log(response.data);
       })
@@ -46,22 +46,22 @@ export default class TutorialsList extends Component {
   }
 
   refreshList() {
-    this.retrieveTutorials();
+    this.retrieveGastos();
     this.setState({
-      currentTutorial: null,
+      currentGasto: null,
       currentIndex: -1
     });
   }
 
-  setActiveTutorial(tutorial, index) {
+  setActiveGasto(gastos, index) {
     this.setState({
-      currentTutorial: tutorial,
+      currentGasto: gastos,
       currentIndex: index
     });
   }
 
-  removeAllTutorials() {
-    TutorialDataService.deleteAll()
+  removeAllGastos() {
+    GastoDataService.deleteAll()
       .then(response => {
         console.log(response.data);
         this.refreshList();
@@ -71,16 +71,16 @@ export default class TutorialsList extends Component {
       });
   }
 
-  searchTitle() {
+  buscarNome() {
     this.setState({
-      currentTutorial: null,
+      currentGasto: null,
       currentIndex: -1
     });
 
-    TutorialDataService.findByTitle(this.state.searchTitle)
+    GastoDataService.findByNome(this.state.buscarNome)
       .then(response => {
         this.setState({
-          tutorials: response.data
+          Gastos: response.data
         });
         console.log(response.data);
       })
@@ -90,7 +90,7 @@ export default class TutorialsList extends Component {
   }
 
   render() {
-    const { searchTitle, tutorials, currentTutorial, currentIndex } = this.state;
+    const { buscarNome, Gastos, currentGasto, currentIndex } = this.state;
 
     return (
       <div className="list row">
@@ -99,81 +99,87 @@ export default class TutorialsList extends Component {
             <input
               type="text"
               className="form-control"
-              placeholder="Search by title"
-              value={searchTitle}
-              onChange={this.onChangeSearchTitle}
+              placeholder="Buscar pelo nome"
+              value={buscarNome}
+              onChange={this.onChangeBuscarNome}
             />
             <div className="input-group-append">
               <button
                 className="btn btn-outline-secondary"
                 type="button"
-                onClick={this.searchTitle}
+                onClick={this.buscarNome}
               >
-                Search
+                Buscar
               </button>
             </div>
           </div>
         </div>
         <div className="col-md-6">
-          <h4>Tutorials List</h4>
+          <h4>Lista de Gastos</h4>
 
           <ul className="list-group">
-            {tutorials &&
-              tutorials.map((tutorial, index) => (
+            {Gastos &&
+              Gastos.map((gastos, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveTutorial(tutorial, index)}
+                  onClick={() => this.setActiveGasto(gastos, index)}
                   key={index}
                 >
-                  {tutorial.title}
+                  {gastos.nome}
                 </li>
               ))}
           </ul>
 
           <button
             className="m-3 btn btn-sm btn-danger"
-            onClick={this.removeAllTutorials}
+            onClick={this.removeAllGastos}
           >
-            Remove All
+            Remover Todos
           </button>
         </div>
         <div className="col-md-6">
-          {currentTutorial ? (
+          {currentGasto ? (
             <div>
-              <h4>Tutorial</h4>
+              <h4>Dados do Gasto</h4>
               <div>
                 <label>
-                  <strong>Title:</strong>
+                  <strong>Nome:</strong>
                 </label>{" "}
-                {currentTutorial.title}
+                {currentGasto.nome}
               </div>
               <div>
                 <label>
-                  <strong>Description:</strong>
+                  <strong>Valor:</strong>
                 </label>{" "}
-                {currentTutorial.description}
+                {currentGasto.valor}
+              </div>
+              <div>
+                <label>
+                  <strong>Data:</strong>
+                </label>{" "}
+                {currentGasto.data}
               </div>
               <div>
                 <label>
                   <strong>Status:</strong>
                 </label>{" "}
-                {currentTutorial.published ? "Published" : "Pending"}
+                {currentGasto.pago ? "Pago" : "Devendo"}
               </div>
 
               <Link
-                to={"/tutorials/" + currentTutorial.id}
+                to={"/gastos/" + currentGasto.id}
                 className="badge badge-warning"
               >
-                Edit
+                Editar
               </Link>
             </div>
           ) : (
             <div>
               <br />
-              <p>Please click on a Tutorial...</p>
+              <p>Por favor selecione um gasto...</p>
             </div>
           )}
         </div>

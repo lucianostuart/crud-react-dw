@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8080"
 };
 
 app.use(cors(corsOptions));
@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/gasto.routes")(app);
 
-const port = process.env.PORT || 8081;
+const port = 8081;
 app.listen(port, () => {
   console.log(`Rodando na ${port} :)`);
 });

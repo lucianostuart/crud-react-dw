@@ -40,7 +40,7 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Tutorial.findByPk(id)
+  Gasto.findByPk(id)
     .then(data => {
       if (data) {
         res.send(data);
@@ -99,6 +99,22 @@ exports.delete = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message: "Não foi possivel remover o gasto no id=" + id
+      });
+    });
+};
+
+exports.deleteAll = (req, res) => {
+  Gasto.destroy({
+    where: {},
+    truncate: false
+  })
+    .then(nums => {
+      res.send({ message: `${nums} Gastos foram deletados!` });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "erro!"
       });
     });
 };
